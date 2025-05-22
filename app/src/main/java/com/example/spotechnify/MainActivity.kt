@@ -8,9 +8,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 val navController = rememberNavController()
-                val authRepository: AuthRepository = hiltViewModel<AuthRepository>()
+                val authViewModel: AuthViewModel = hiltViewModel()
 
-                val startDestination = if (authRepository.hasAccessToken()) {
+                // Check auth state when activity starts
+                LaunchedEffect(Unit) {
+                    authViewModel.checkAuthState()
+                }
+
+                // Observe auth state changes
+                val authState by authViewModel.authState.collectAsState()
+
+                val startDestination = if (authState.isAuthenticated) {
                     NavRoutes.Home.route
                 } else {
                     NavRoutes.Welcome.route
