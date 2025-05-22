@@ -49,6 +49,22 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    // Retrofit for API calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
+    // DataStore for token storage
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Coil for image loading
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // Jetpack Compose (ensure these are included)
+    implementation("androidx.compose.ui:ui:1.6.0")
+    implementation("androidx.compose.material3:material3:1.6.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
+    implementation("androidx.navigation:navigation-compose:2.7.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
