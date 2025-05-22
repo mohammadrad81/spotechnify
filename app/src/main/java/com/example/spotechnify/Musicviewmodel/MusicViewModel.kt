@@ -1,5 +1,6 @@
 package com.example.spotechnify.Musicviewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MusicViewModel(private val musicService: MusicService) : ViewModel() {
     private val _user = mutableStateOf<User?>(null)
@@ -32,7 +35,13 @@ class MusicViewModel(private val musicService: MusicService) : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private fun logWithTime(tag: String, message: String) {
+        val timestamp = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault()).format(Date())
+        Log.d(tag, "[$timestamp] $message")
+    }
+
     init {
+        logWithTime("MusicViewModel", "ViewModel initialized, fetching songs...")
         fetchSongs()
     }
 
@@ -41,14 +50,19 @@ class MusicViewModel(private val musicService: MusicService) : ViewModel() {
             try {
                 _isLoading.value = true
                 val allSongs = musicService.getAllSongs()
+                Log.d("MusicViewModel", "Fetched ${allSongs.size} songs successfully.")
                 _allSongs.value = allSongs
                 _filteredSongs.value = allSongs
 
                 _user.value?.let {
-                    _forYouSongs.value = musicService.getRecommendedSongs()
-                    _likedSongs.value = musicService.getLikedSongs()
+                    val recommendedSongs = musicService.getRecommendedSongs()
+                    val likedSongsList = musicService.getLikedSongs()
+                    Log.d("MusicViewModel", "Recommended songs: ${recommendedSongs.size}, Liked songs: ${likedSongsList.size}")
+                    _forYouSongs.value = recommendedSongs
+                    _likedSongs.value = likedSongsList
                 }
             } catch (e: Exception) {
+                Log.e("MusicViewModel", "Error fetching songs: ${e.message}", e)
                 _filteredSongs.value = emptyList()
                 _forYouSongs.value = emptyList()
                 _likedSongs.value = emptyList()
@@ -58,29 +72,37 @@ class MusicViewModel(private val musicService: MusicService) : ViewModel() {
         }
     }
 
+
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
         viewModelScope.launch {
             try {
+                logWithTime("MusicViewModel", "Search query updated: \"$query\"")
                 _isLoading.value = true
                 _filteredSongs.value = if (query.isEmpty()) {
-                    musicService.getAllSongs()
+                    musicService.getAllSongs().also {
+                        logWithTime("MusicViewModel", "Search query empty, fetched all songs (${it.size})")
+                    }
                 } else {
-                    musicService.searchSongs(query)
+                    musicService.searchSongs(query).also {
+                        logWithTime("MusicViewModel", "Search results for \"$query\": ${it.size} songs")
+                    }
                 }
             } catch (e: Exception) {
+                Log.e("MusicViewModel", "Error searching query \"$query\": ${e.localizedMessage}", e)
                 _filteredSongs.value = emptyList()
             } finally {
                 _isLoading.value = false
+                logWithTime("MusicViewModel", "Search operation finished")
             }
         }
     }
 
     fun setUser(user: User) {
+        logWithTime("MusicViewModel", "Setting user: ${user.username}")
         _user.value = user
         fetchSongs()
     }
 }
 
 data class User(val id: String, val username: String, val email: String, val token: String)
-

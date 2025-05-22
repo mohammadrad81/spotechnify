@@ -61,23 +61,25 @@ fun SongItem(song: Song, onClick: (Song) -> Unit) {
 
 @Composable
 fun MusicScreen(viewModel: MusicViewModel, navController: NavController) {
-    val tabs = listOf("All", "For You", "Liked")
-    var selectedTab by remember { mutableStateOf(0) }
+    Scaffold {innerPadding->
+        val tabs = listOf("All", "For You", "Liked")
+        var selectedTab by remember { mutableStateOf(0) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TabRow(selectedTabIndex = selectedTab) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    text = { Text(title) },
-                    selected = selectedTab == index,
-                    onClick = { selectedTab = index }
-                )
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            TabRow(selectedTabIndex = selectedTab) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        text = { Text(title) },
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index }
+                    )
+                }
             }
-        }
-        when (selectedTab) {
-            0 -> AllScreen(viewModel, navController)
-            1 -> ForYouScreen(viewModel, navController)
-            2 -> LikedScreen(viewModel, navController)
+            when (selectedTab) {
+                0 -> AllScreen(viewModel, navController)
+                1 -> ForYouScreen(viewModel, navController)
+                2 -> LikedScreen(viewModel, navController)
+            }
         }
     }
 }

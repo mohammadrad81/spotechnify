@@ -66,6 +66,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
     implementation("androidx.navigation:navigation-compose:2.7.0")
 
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
     implementation(libs.androidx.material3)
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
