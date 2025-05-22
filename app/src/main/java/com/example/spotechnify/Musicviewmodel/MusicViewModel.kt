@@ -51,7 +51,7 @@ class MusicViewModel(private val musicService: MusicService) : ViewModel() {
             } catch (e: Exception) {
                 _filteredSongs.value = emptyList()
                 _forYouSongs.value = emptyList()
-                _likedSongs.value = empty_ist()
+                _likedSongs.value = emptyList()
             } finally {
                 _isLoading.value = false
             }

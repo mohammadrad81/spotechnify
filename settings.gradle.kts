@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+
     }
 }
 dependencyResolutionManagement {
@@ -21,4 +22,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Spotechnify"
 include(":app")
- 
+
+
