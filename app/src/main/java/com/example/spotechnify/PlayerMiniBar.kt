@@ -59,7 +59,7 @@ fun PlayerMiniBar(viewModel: PlayerViewModel, onBarClicked: ()->Unit){
             verticalAlignment = Alignment.CenterVertically
         ){
             Image(
-                bitmap = uiState.trackInformation?.albumArtBitMap?:viewModel.defaultTrackInfo.albumArtBitMap,
+                bitmap = uiState.trackInformation?.albumArtBitMap?:viewModel.defaultBitMap,
                 contentDescription = "Album Art",
                 modifier = Modifier
                     .size(40.dp)
@@ -67,7 +67,7 @@ fun PlayerMiniBar(viewModel: PlayerViewModel, onBarClicked: ()->Unit){
             )
             Column{
                 Text(
-                    text = uiState.trackInformation?.name?:"Unknown",
+                    text = uiState.trackInformation?.title?:"Unknown",
                     color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
@@ -85,7 +85,7 @@ fun PlayerMiniBar(viewModel: PlayerViewModel, onBarClicked: ()->Unit){
                     .background(Color(0xFF1DB954), CircleShape)
             ) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = Color.White)
                 } else {
                     Icon(
                         imageVector = if (uiState.isPlaying) Icons.Default.Clear else Icons.Default.PlayArrow,

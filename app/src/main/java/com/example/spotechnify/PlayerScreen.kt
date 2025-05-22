@@ -74,7 +74,6 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
             modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
             Row(modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = { navController.popBackStack() }) {
@@ -89,7 +88,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
             Spacer(modifier = Modifier.height(50.dp))
 
             Image(
-                bitmap = uiState.trackInformation?.albumArtBitMap?:viewModel.defaultTrackInfo.albumArtBitMap,
+                bitmap = uiState.trackInformation?.albumArtBitMap?:viewModel.defaultBitMap,
                 contentDescription = "Album Art",
                 modifier = Modifier
                     .size(300.dp)
@@ -103,7 +102,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
             ) {
                 Column {
                     Text(
-                        text = uiState.trackInformation?.name?:"Unknown",
+                        text = uiState.trackInformation?.title?:"Unknown",
                         color = Color.White,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
@@ -170,7 +169,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
 //                    )
 //                }
 
-                IconButton(onClick = { /* Previous track */ }) {
+                IconButton(onClick = { viewModel.playPrevious() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Previous",
@@ -186,7 +185,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                         .background(Color(0xFF1DB954), CircleShape)
                 ) {
                     if (uiState.isLoading) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(color = Color.White)
                     } else {
                         Icon(
                             imageVector = if (uiState.isPlaying) Icons.Default.Clear else Icons.Default.PlayArrow,
@@ -197,7 +196,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                     }
                 }
 
-                IconButton(onClick = { /* Next track */ }) {
+                IconButton(onClick = { viewModel.playNext() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Next",

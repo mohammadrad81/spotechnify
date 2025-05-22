@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface AudioPlayerRepository {
-    suspend fun setTrack(url: String)
+    suspend fun setTrack(url: String, onCompleted: () -> Unit)
     fun play()
     fun pause()
     fun getDuration(): Int

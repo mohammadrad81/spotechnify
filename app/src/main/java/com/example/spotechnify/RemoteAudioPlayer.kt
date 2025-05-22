@@ -35,24 +35,22 @@ class RemoteAudioPlayer (
         _playbackState.value = PlaybackState.Idle
     }
 
-    override suspend fun setTrack(url: String) = withContext(Dispatchers.IO) {
+    override suspend fun setTrack(url: String, onCompleted: () -> Unit) = withContext(Dispatchers.IO) {
         try {
             _playbackState.value = PlaybackState.Preparing
             mediaPlayer?.release()
             mediaPlayer = MediaPlayer().apply {
                 setOnPreparedListener { mp ->
-//                    audioDuration.floatValue = mp.duration.toFloat()
                     _playbackState.value = PlaybackState.Ready
-
-                    if (isPlaying) {
-                        mp.start()
-                        startProgressUpdates()
-                    }
+                    mp.start()
+                    _playbackState.value = PlaybackState.Playing
+                    startProgressUpdates()
                 }
 
                 setOnCompletionListener {
                     _playbackState.value = PlaybackState.Completed
                     stopProgressUpdates()
+                    onCompleted()
                 }
 
                 setOnErrorListener { _, what, extra ->
@@ -92,12 +90,9 @@ class RemoteAudioPlayer (
     }
 
     override fun play() {
-        if (_playbackState.value == PlaybackState.Ready ||
-            _playbackState.value == PlaybackState.Paused) {
-            mediaPlayer?.start()
-            _playbackState.value = PlaybackState.Playing
-            startProgressUpdates()
-        }
+        mediaPlayer?.start()
+        _playbackState.value = PlaybackState.Playing
+        startProgressUpdates()
     }
 
     override fun pause() {
@@ -119,7 +114,15 @@ class RemoteAudioPlayer (
     }
 
     override fun getDuration(): Int {
-        return mediaPlayer?.duration ?: 0
+        return try {
+                if (_playbackState.value != PlaybackState.Completed && mediaPlayer != null) {
+                    mediaPlayer?.duration!!
+                } else {
+                    0
+                }
+            } catch (e: IllegalStateException) {
+                0
+            }
     }
 
     override fun getCurrentPosition(): Int {

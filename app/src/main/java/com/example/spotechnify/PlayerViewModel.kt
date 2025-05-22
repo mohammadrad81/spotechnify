@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.graphics.Canvas
 import androidx.compose.ui.graphics.asAndroidBitmap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : ViewModel()  {
     private val _uiState = MutableStateFlow(PlayerUiState())
@@ -21,44 +23,64 @@ class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : Vie
     private val _isPlayerScreenVisible = MutableStateFlow(false)
     val isPlayerScreenVisible: StateFlow<Boolean> = _isPlayerScreenVisible
 
-    val defaultTrackInfo = TrackInformation(
-        name = "song 1",
-        artist = "SoundHelix",
-        albumArtBitMap = ImageBitmap(100, 100).apply {
-            val canvas = Canvas(this.asAndroidBitmap())
-            canvas.drawColor(android.graphics.Color.WHITE)
-        },
-        isLiked = false,
-        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-    )
+    val defaultBitMap = ImageBitmap(100, 100).apply {
+        val canvas = Canvas(this.asAndroidBitmap())
+        canvas.drawColor(android.graphics.Color.WHITE)
+    }
 
     init {
         collectPlaybackStates()
         collectProgressUpdates()
-        loadAudio(defaultTrackInfo)
+//        loadQueue(defaultTrackQueue)
     }
 
-    fun loadAudio(info: TrackInformation) {
-        reset()
+    fun loadQueue(tracks: List<TrackInformation>, startIndex: Int = 0) {
+        resetTrack()
         _uiState.update {
             it.copy(
-                trackInformation = info
+                trackNumber = startIndex,
+                trackQueue = tracks
             )
         }
-        viewModelScope.launch {
-            audioRepository.setTrack(info.url)
-        }
-
+        loadAudioFromQueue(tracks[startIndex])
     }
 
     fun togglePlayPause() {
         when (audioRepository.playbackState.value) {
             is PlaybackState.Playing -> audioRepository.pause()
             is PlaybackState.Ready, is PlaybackState.Paused -> audioRepository.play()
-            else -> {
-                Log.d("PLAY BUTTON","YOOOOOOOKH")
-                Unit
+            else -> Unit
+        }
+    }
+
+    fun playNext() {
+        audioRepository.release()
+        if (_uiState.value.trackInformation != null && _uiState.value.trackQueue.isNotEmpty()) {
+            val newIndex = (_uiState.value.trackNumber + 1) % _uiState.value.trackQueue.size
+            val newTrack = _uiState.value.trackQueue[newIndex]
+            resetTrack()
+            _uiState.update {
+                it.copy(trackNumber = newIndex)
             }
+            loadAudioFromQueue(newTrack)
+            Log.e("CONTROLLERS", "NEW INDEX IS ${_uiState.value.trackNumber}")
+        }
+    }
+
+    fun playPrevious() {
+        audioRepository.release()
+        if (_uiState.value.trackInformation != null) {
+            val newIndex = if (_uiState.value.trackNumber > 0) {
+                _uiState.value.trackNumber - 1
+            } else {
+                _uiState.value.trackQueue.lastIndex
+            }
+            val newTrack = _uiState.value.trackQueue[newIndex]
+            resetTrack()
+            _uiState.update {
+                it.copy(trackNumber = newIndex)
+            }
+            loadAudioFromQueue(newTrack)
         }
     }
 
@@ -69,27 +91,39 @@ class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : Vie
     fun toggleLike(){
         // TODO: an api call must be done
         if (_uiState.value.trackInformation != null){
-            _uiState.update {
-                it.copy(
-                    trackInformation = it.trackInformation?.copy(
-                        isLiked = !it.trackInformation.isLiked
-                    )
-                )
+            _uiState.update { currentState ->
+                val updatedSongs = currentState.trackQueue.map { song ->
+                    if (song.id == currentState.trackInformation?.id) song.copy(isLiked = !song.isLiked) else song
+                }
+                currentState.copy(trackQueue = updatedSongs)
+            }
+        }
+    }
+
+    fun setPlayerScreenVisibility(visible: Boolean) {
+        _isPlayerScreenVisible.value = visible
+    }
+
+    private fun loadAudioFromQueue(info: TrackInformation) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                audioRepository.setTrack(info.url) { playNext() }
             }
         }
     }
 
     private fun collectPlaybackStates() {
         viewModelScope.launch {
-            audioRepository.playbackState.collect { state ->
-                _uiState.update {
-                    Log.d("sdasd", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
-                    it.copy(
-                        playbackState = state,
-                        isLoading = state == PlaybackState.Preparing,
-                        error = (state as? PlaybackState.Error)?.message,
-                        durationMs = audioRepository.getDuration(),
-                    )
+            withContext(Dispatchers.IO) {
+                audioRepository.playbackState.collect { state ->
+                    _uiState.update {
+                        it.copy(
+                            playbackState = state,
+                            isLoading = state != PlaybackState.Playing && state != PlaybackState.Paused && state != PlaybackState.Idle,
+                            error = (state as? PlaybackState.Error)?.message,
+                            durationMs = audioRepository.getDuration(),
+                        )
+                    }
                 }
             }
         }
@@ -97,8 +131,10 @@ class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : Vie
 
     private fun collectProgressUpdates() {
         viewModelScope.launch {
-            audioRepository.playbackProgress.collect { progress ->
-                _uiState.update { it.copy(progressMs = progress) }
+            withContext(Dispatchers.IO) {
+                audioRepository.playbackProgress.collect { progress ->
+                    _uiState.update { it.copy(progressMs = progress) }
+                }
             }
         }
     }
@@ -108,19 +144,14 @@ class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : Vie
         super.onCleared()
     }
 
-    fun setPlayerScreenVisibility(visible: Boolean) {
-        _isPlayerScreenVisible.value = visible
-    }
-
-    fun reset(){
+    private fun resetTrack(){
         _uiState.update {
             it.copy(
                 playbackState = PlaybackState.Idle,
                 progressMs = 0,
                 durationMs = 0,
-                isLoading = false,
                 error = null,
-                trackInformation = null
+                trackNumber = 0
             )
         }
     }
@@ -133,14 +164,15 @@ data class PlayerUiState(
     val durationMs: Int = 0,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val trackInformation: TrackInformation? = null
+    val trackQueue: List<TrackInformation> = emptyList(),
+    val trackNumber: Int = 0,
 ) {
+    val trackInformation: TrackInformation? =
+        if(trackQueue.isNotEmpty() && trackNumber < trackQueue.size)
+            trackQueue[trackNumber] else null
     val isPlaying: Boolean get() = playbackState == PlaybackState.Playing
-
     val formattedDuration: String get() = formatTime(durationMs)
-
     val formattedPosition: String get() = formatTime(progressMs)
-
     val progress: Float get() = getProgress(progressMs, durationMs)
 
     @SuppressLint("DefaultLocale")
@@ -159,7 +191,8 @@ data class PlayerUiState(
 }
 
 data class TrackInformation(
-    val name: String,
+    val id: Int,
+    val title: String,
     val artist: String,
     val albumArtBitMap: ImageBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).asImageBitmap(),
     val isLiked: Boolean,
