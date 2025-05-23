@@ -1,6 +1,5 @@
 package com.example.spotechnify
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 @Composable
 fun PlayerMiniBar(viewModel: PlayerViewModel, onBarClicked: ()->Unit){
@@ -58,8 +58,8 @@ fun PlayerMiniBar(viewModel: PlayerViewModel, onBarClicked: ()->Unit){
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ){
-            Image(
-                bitmap = uiState.trackInformation?.albumArtBitMap?:viewModel.defaultBitMap,
+            AsyncImage(
+                model = uiState.trackInformation?.coverImageUrl,
                 contentDescription = "Album Art",
                 modifier = Modifier
                     .size(40.dp)

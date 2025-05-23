@@ -1,6 +1,5 @@
 package com.example.spotechnify
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 
 @Composable
@@ -87,8 +87,8 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            Image(
-                bitmap = uiState.trackInformation?.albumArtBitMap?:viewModel.defaultBitMap,
+            AsyncImage(
+                model = uiState.trackInformation?.coverImageUrl,
                 contentDescription = "Album Art",
                 modifier = Modifier
                     .size(300.dp)

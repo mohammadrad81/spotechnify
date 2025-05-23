@@ -1,6 +1,5 @@
 package com.example.spotechnify
 
-import android.graphics.Canvas
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,8 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.spotechnify.ui.theme.SpotechnifyTheme
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,34 +22,25 @@ val defaultTrackQueue = listOf(
         id = 1,
         title = "song 1",
         artist = "SoundHelix",
-        albumArtBitMap = ImageBitmap(100, 100).apply {
-            val canvas = Canvas(this.asAndroidBitmap())
-            canvas.drawColor(android.graphics.Color.WHITE)
-        },
         isLiked = false,
-        url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        coverImageUrl = "https://static-cse.canva.com/blob/2031574/1600w-cV8ArcnU-oA.jpg",
     ),
     TrackInformation(
         id = 2,
         title = "song 2",
         artist = "SoundHelix",
-        albumArtBitMap = ImageBitmap(100, 100).apply {
-            val canvas = Canvas(this.asAndroidBitmap())
-            canvas.drawColor(android.graphics.Color.YELLOW)
-        },
         isLiked = false,
-        url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+        url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        coverImageUrl = "https://static-cse.canva.com/blob/2031574/1600w-cV8ArcnU-oA.jpg",
     ),
     TrackInformation(
         id = 3,
         title = "song 3",
         artist = "SoundHelix",
-        albumArtBitMap = ImageBitmap(100, 100).apply {
-            val canvas = Canvas(this.asAndroidBitmap())
-            canvas.drawColor(android.graphics.Color.RED)
-        },
         isLiked = false,
-        url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+        url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        coverImageUrl = "https://static-cse.canva.com/blob/2031574/1600w-cV8ArcnU-oA.jpg",
     )
 )
 

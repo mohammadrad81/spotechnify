@@ -1,18 +1,13 @@
 package com.example.spotechnify
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
 import android.util.Log
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import android.graphics.Canvas
-import androidx.compose.ui.graphics.asAndroidBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -23,15 +18,9 @@ class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : Vie
     private val _isPlayerScreenVisible = MutableStateFlow(false)
     val isPlayerScreenVisible: StateFlow<Boolean> = _isPlayerScreenVisible
 
-    val defaultBitMap = ImageBitmap(100, 100).apply {
-        val canvas = Canvas(this.asAndroidBitmap())
-        canvas.drawColor(android.graphics.Color.WHITE)
-    }
-
     init {
         collectPlaybackStates()
         collectProgressUpdates()
-//        loadQueue(defaultTrackQueue)
     }
 
     fun loadQueue(tracks: List<TrackInformation>, startIndex: Int = 0) {
@@ -194,7 +183,7 @@ data class TrackInformation(
     val id: Int,
     val title: String,
     val artist: String,
-    val albumArtBitMap: ImageBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).asImageBitmap(),
+    val coverImageUrl: String,
     val isLiked: Boolean,
     val url: String
 )
