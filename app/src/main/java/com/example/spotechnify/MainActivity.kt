@@ -47,7 +47,7 @@ val defaultTrackQueue = listOf(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val playerViewModel = PlayerViewModel(RemoteAudioPlayer())
+        val playerViewModel = PlayerViewModel(RemoteAudioPlayer(), RemoteLikeService(""))
         playerViewModel.loadQueue(defaultTrackQueue)
 
         enableEdgeToEdge()

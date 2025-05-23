@@ -11,7 +11,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : ViewModel()  {
+class PlayerViewModel (
+    private val audioRepository: AudioPlayerRepository,
+    private val likeRepository: LikeRepository
+) : ViewModel()  {
     private val _uiState = MutableStateFlow(PlayerUiState())
     val uiState: StateFlow<PlayerUiState> = _uiState
 
@@ -78,13 +81,22 @@ class PlayerViewModel (private val audioRepository: AudioPlayerRepository) : Vie
     }
 
     fun toggleLike(){
-        // TODO: an api call must be done
         if (_uiState.value.trackInformation != null){
-            _uiState.update { currentState ->
-                val updatedSongs = currentState.trackQueue.map { song ->
-                    if (song.id == currentState.trackInformation?.id) song.copy(isLiked = !song.isLiked) else song
+            viewModelScope.launch {
+                val track = _uiState.value.trackInformation!!
+                val res = if (track.isLiked)
+                    likeRepository.likeTrack(track.id)
+                else
+                    likeRepository.unlikeTrack(track.id)
+
+                if (res == LikeServiceResult.Success){
+                    _uiState.update { currentState ->
+                        val updatedSongs = currentState.trackQueue.map { song ->
+                            if (song.id == currentState.trackInformation?.id) song.copy(isLiked = !song.isLiked) else song
+                        }
+                        currentState.copy(trackQueue = updatedSongs)
+                    }
                 }
-                currentState.copy(trackQueue = updatedSongs)
             }
         }
     }
