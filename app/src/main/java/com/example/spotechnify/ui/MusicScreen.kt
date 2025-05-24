@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,12 +26,12 @@ import com.example.spotechnify.Musicviewmodel.MusicViewModel
 import com.example.spotechnify.Musicviewmodel.User
 
 @Composable
-fun SongItem(song: Song, onClick: (Song) -> Unit) {
+fun SongItem(song: Song, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onClick(song) },
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
@@ -63,7 +64,8 @@ fun SongItem(song: Song, onClick: (Song) -> Unit) {
 @Composable
 fun MusicScreen(navController: NavController,
                 viewModel: MusicViewModel,
-                user: User) {
+                user: User,
+                onSongItemClick: (List<Song>, Int) -> Unit) {
     viewModel.setUser(user)
     Scaffold {innerPadding->
         val tabs = listOf("All", "For You", "Liked")
@@ -80,16 +82,18 @@ fun MusicScreen(navController: NavController,
                 }
             }
             when (selectedTab) {
-                0 -> AllScreen(viewModel, navController)
-                1 -> ForYouScreen(viewModel, navController)
-                2 -> LikedScreen(viewModel, navController)
+                0 -> AllScreen(viewModel, navController, onSongItemClick)
+                1 -> ForYouScreen(viewModel, navController, onSongItemClick)
+                2 -> LikedScreen(viewModel, navController, onSongItemClick)
             }
         }
     }
 }
 
 @Composable
-fun AllScreen(viewModel: MusicViewModel, navController: NavController) {
+fun AllScreen(viewModel: MusicViewModel,
+              navController: NavController,
+              onSongItemClick: (List<Song>, Int) -> Unit) {
     val filteredSongs = viewModel.filteredSongs.collectAsState().value
     val searchQuery = viewModel.searchQuery.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
@@ -137,8 +141,11 @@ fun AllScreen(viewModel: MusicViewModel, navController: NavController) {
             }
             else -> {
                 LazyColumn {
-                    items(filteredSongs, key = { it.id }) { song ->
-                        SongItem(song) { navController.navigate("song_details/${song.id}") }
+//                    items(filteredSongs, key = { it.id }) { song ->
+//                        SongItem(song) { navController.navigate("song_details/${song.id}") }
+//                    }
+                    itemsIndexed(filteredSongs, key = {_, song -> song.id}) {index,  song ->
+                        SongItem(song) { onSongItemClick(filteredSongs, index) }
                     }
                 }
             }
@@ -147,7 +154,9 @@ fun AllScreen(viewModel: MusicViewModel, navController: NavController) {
 }
 
 @Composable
-fun ForYouScreen(viewModel: MusicViewModel, navController: NavController) {
+fun ForYouScreen(viewModel: MusicViewModel,
+                 navController: NavController,
+                 onSongItemClick: (List<Song>, Int) -> Unit) {
     val forYouSongs = viewModel.forYouSongs.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
 
@@ -173,8 +182,11 @@ fun ForYouScreen(viewModel: MusicViewModel, navController: NavController) {
         }
         else -> {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(forYouSongs, key = { it.id }) { song ->
-                    SongItem(song) { navController.navigate("song_details/${song.id}") }
+//                items(forYouSongs, key = { it.id }) { song ->
+//                    SongItem(song) { navController.navigate("song_details/${song.id}") }
+//                }
+                itemsIndexed(forYouSongs, key = {_, song -> song.id}) {index,  song ->
+                    SongItem(song) { onSongItemClick(forYouSongs, index) }
                 }
             }
         }
@@ -182,7 +194,9 @@ fun ForYouScreen(viewModel: MusicViewModel, navController: NavController) {
 }
 
 @Composable
-fun LikedScreen(viewModel: MusicViewModel, navController: NavController) {
+fun LikedScreen(viewModel: MusicViewModel,
+                navController: NavController,
+                onSongItemClick: (List<Song>, Int) -> Unit) {
     val likedSongs = viewModel.likedSongs.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
 
@@ -208,8 +222,11 @@ fun LikedScreen(viewModel: MusicViewModel, navController: NavController) {
         }
         else -> {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(likedSongs, key = { it.id }) { song ->
-                    SongItem(song) { navController.navigate("song_details/${song.id}") }
+//                items(likedSongs, key = { it.id }) { song ->
+//                    SongItem(song) { navController.navigate("player_screen?user=${}&") }
+//                }
+                itemsIndexed(likedSongs, key = {_, song -> song.id}) {index,  song ->
+                    SongItem(song) { onSongItemClick(likedSongs, index) }
                 }
             }
         }
