@@ -1,6 +1,7 @@
 package com.example.spotechnify.Authentication
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
 data class AuthResponse(
     val message: String? = null,

@@ -25,6 +25,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.spotechnify.Musicviewmodel.User
+import com.google.gson.Gson
 
 @Composable
 fun LoginScreen(
@@ -36,15 +38,19 @@ fun LoginScreen(
     val authResult by viewModel.authResult.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    // Handle navigation when login is successful
     LaunchedEffect(authResult) {
-        when (authResult) {
-            is AuthViewModel.AuthResult.Success -> {
-                navController.navigate("home") {
-                    popUpTo("login") { inclusive = true }
-                }
-            }
-            else -> {}
+        if (authResult is AuthViewModel.AuthResult.Success) {
+            val user = (authResult as AuthViewModel.AuthResult.Success).user
+            val token = (authResult as AuthViewModel.AuthResult.Success).token
+            val authenticatedUserData = User(
+                id = user.id.toString(),
+                username = user.username,
+                email = user.email,
+                token = token.toString()
+            )
+            val userJson = Gson().toJson(authenticatedUserData)
+
+            navController.navigate("music_screen" + "?user=${userJson}")
         }
     }
 

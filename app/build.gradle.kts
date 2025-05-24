@@ -49,6 +49,31 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    // Retrofit for API calls
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson.v290)
+    implementation(libs.okhttp)
+
+    // DataStore for token storage
+    implementation(libs.androidx.datastore.preferences)
+
+    // Coil for image loading
+    implementation(libs.coil.compose)
+
+    // Jetpack Compose (ensure these are included)
+    implementation(libs.ui)
+    implementation(libs.material3)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.navigation.compose)
+
+    implementation (libs.logging.interceptor)
+
+    implementation(libs.androidx.material3)
+
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.navigation.compose.android)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,3 +90,4 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.logging.interceptor)
 }
+

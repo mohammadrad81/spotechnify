@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.spotechnify.Musicviewmodel.User
+import com.google.gson.Gson
 
 @Composable
 fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
@@ -36,9 +38,17 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
 
     LaunchedEffect(authResult) {
         if (authResult is AuthViewModel.AuthResult.Success) {
-            navController.navigate("home") {
-                popUpTo("signup") { inclusive = true }
-            }
+            val user = (authResult as AuthViewModel.AuthResult.Success).user
+            val token = (authResult as AuthViewModel.AuthResult.Success).token
+            val authenticatedUserData: User = User(
+                id = user.id.toString(),
+                username = user.username,
+                email = user.email,
+                token = token.toString()
+            )
+            val userJson = Gson().toJson(authenticatedUserData)
+
+            navController.navigate("music_screen" + "?user=${userJson}")
         }
     }
 
