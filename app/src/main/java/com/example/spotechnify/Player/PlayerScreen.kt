@@ -38,10 +38,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.spotechnify.R
 
 
 @Composable
@@ -188,7 +191,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                         CircularProgressIndicator(color = Color.White)
                     } else {
                         Icon(
-                            imageVector = if (uiState.isPlaying) Icons.Default.Clear else Icons.Default.PlayArrow,
+                            imageVector = if (uiState.isPlaying) ImageVector.vectorResource(R.drawable.pause_solid) else Icons.Default.PlayArrow,
                             contentDescription = if (uiState.isPlaying) "Pause" else "Play",
                             tint = Color.White,
                             modifier = Modifier.size(36.dp)

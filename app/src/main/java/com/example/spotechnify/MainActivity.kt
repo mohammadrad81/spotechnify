@@ -84,7 +84,7 @@ fun AuthApp() {
             if (musicService == null || musicViewModel == null){
                 musicService = NetworkModule.provideMusicService(user.token)
                 musicViewModel = MusicViewModelFactory(musicService).create(MusicViewModel::class.java)
-            }
+           }
             if(playerViewModel == null){
                 playerViewModel= PlayerViewModelFactory(
                     RemoteAudioPlayer(),
