@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Authentication
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

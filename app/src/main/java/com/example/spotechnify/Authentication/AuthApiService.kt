@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Authentication
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

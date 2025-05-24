@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Authentication
 
 import com.google.gson.annotations.SerializedName
 

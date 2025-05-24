@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Authentication
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
