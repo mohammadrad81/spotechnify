@@ -1,9 +1,7 @@
-package com.example.spotechnify
+package com.example.spotechnify.Player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.spotechnify.Musicdata.Musicnetwork.MusicService
-import com.example.spotechnify.Musicviewmodel.MusicViewModel
 
 class PlayerViewModelFactory(
     private val audioRepository: AudioPlayerRepository,

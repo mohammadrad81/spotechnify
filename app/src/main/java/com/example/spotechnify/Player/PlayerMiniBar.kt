@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

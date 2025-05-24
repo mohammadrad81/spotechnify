@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Player
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

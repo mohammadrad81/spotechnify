@@ -1,11 +1,11 @@
-package com.example.spotechnify.Musicviewmodel
+package com.example.spotechnify.Music.Musicviewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.spotechnify.Musicdata.Musicmodel.Song
-import com.example.spotechnify.Musicdata.Musicnetwork.MusicService
+import com.example.spotechnify.Music.Musicdata.Musicmodel.Song
+import com.example.spotechnify.Music.Musicdata.Musicnetwork.MusicService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

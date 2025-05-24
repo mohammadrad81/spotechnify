@@ -1,4 +1,4 @@
-package com.example.spotechnify.Musicdata.Musicdatastore
+package com.example.spotechnify.Music.Musicdata.Musicdatastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

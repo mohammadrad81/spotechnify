@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Player
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow

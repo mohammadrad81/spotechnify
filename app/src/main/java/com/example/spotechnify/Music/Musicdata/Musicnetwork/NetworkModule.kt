@@ -1,4 +1,4 @@
-package com.example.spotechnify.Musicdata.Musicnetwork
+package com.example.spotechnify.Music.Musicdata.Musicnetwork
 
 import android.util.Log
 import okhttp3.Interceptor

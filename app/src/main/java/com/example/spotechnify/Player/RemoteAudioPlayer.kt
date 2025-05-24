@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Player
 
 import android.media.MediaPlayer
 import android.util.Log
@@ -73,11 +73,15 @@ class RemoteAudioPlayer (
         stopProgressUpdates()
         progressUpdateJob = CoroutineScope(dispatcher).launch {
             while (_playbackState.value == PlaybackState.Playing) {
-                mediaPlayer?.let { mp ->
-                    if (mp.duration > 0) {
-                        _playbackProgress.value = mp.currentPosition
-                        Log.d("ProgressUpdates","progress updated with the value ${mp.currentPosition}")
+                try {
+                    mediaPlayer?.let { mp ->
+                        if (mp.isPlaying && mp.duration > 0) {
+                            _playbackProgress.value = mp.currentPosition
+                            Log.d("ProgressUpdates","progress updated with the value ${mp.currentPosition}")
+                        }
                     }
+                } catch (e: IllegalStateException) {
+                    Log.e("ProgressUpdates", "MediaPlayer in illegal state: ${e.message}")
                 }
                 delay(100)
             }

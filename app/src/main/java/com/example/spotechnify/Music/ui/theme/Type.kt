@@ -1,4 +1,4 @@
-package com.example.spotechnify.ui.theme
+package com.example.spotechnify.Music.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

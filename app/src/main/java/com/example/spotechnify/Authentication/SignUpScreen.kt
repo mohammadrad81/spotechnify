@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.spotechnify.Musicviewmodel.User
+import com.example.spotechnify.Music.Musicviewmodel.User
 import com.google.gson.Gson
 
 @Composable

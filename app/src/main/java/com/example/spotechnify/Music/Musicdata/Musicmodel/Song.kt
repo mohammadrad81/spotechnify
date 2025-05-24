@@ -1,4 +1,4 @@
-package com.example.spotechnify.Musicdata.Musicmodel
+package com.example.spotechnify.Music.Musicdata.Musicmodel
 
 import com.google.gson.annotations.SerializedName
 import kotlinx.serialization.Serializable

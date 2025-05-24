@@ -1,8 +1,8 @@
-package com.example.spotechnify.Musicviewmodel
+package com.example.spotechnify.Music.Musicviewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.spotechnify.Musicdata.Musicnetwork.MusicService
+import com.example.spotechnify.Music.Musicdata.Musicnetwork.MusicService
 
 class MusicViewModelFactory(private val musicService: MusicService) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

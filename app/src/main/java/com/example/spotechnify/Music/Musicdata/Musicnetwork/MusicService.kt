@@ -1,6 +1,6 @@
-package com.example.spotechnify.Musicdata.Musicnetwork
+package com.example.spotechnify.Music.Musicdata.Musicnetwork
 
-import com.example.spotechnify.Musicdata.Musicmodel.Song
+import com.example.spotechnify.Music.Musicdata.Musicmodel.Song
 import retrofit2.http.GET
 import retrofit2.http.Query
 

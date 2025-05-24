@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Player
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.example.spotechnify.Musicdata.Musicmodel.Song
+import com.example.spotechnify.Music.Musicdata.Musicmodel.Song
 
 class PlayerViewModel (
     private val audioRepository: AudioPlayerRepository,

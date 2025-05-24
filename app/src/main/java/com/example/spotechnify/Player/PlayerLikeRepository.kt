@@ -1,4 +1,4 @@
-package com.example.spotechnify
+package com.example.spotechnify.Player
 
 interface LikeRepository {
     suspend fun likeTrack(id: Int): LikeServiceResult

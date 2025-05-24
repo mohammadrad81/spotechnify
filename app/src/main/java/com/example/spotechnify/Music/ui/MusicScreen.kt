@@ -1,10 +1,9 @@
-package com.example.spotechnify.ui
+package com.example.spotechnify.Music.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,9 +20,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.spotechnify.Musicdata.Musicmodel.Song
-import com.example.spotechnify.Musicviewmodel.MusicViewModel
-import com.example.spotechnify.Musicviewmodel.User
+import com.example.spotechnify.Music.Musicdata.Musicmodel.Song
+import com.example.spotechnify.Music.Musicviewmodel.MusicViewModel
+import com.example.spotechnify.Music.Musicviewmodel.User
 
 @Composable
 fun SongItem(song: Song, onClick: () -> Unit) {
