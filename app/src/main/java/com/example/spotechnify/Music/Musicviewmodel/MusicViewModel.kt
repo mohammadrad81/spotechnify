@@ -1,11 +1,14 @@
 package com.example.spotechnify.Music.Musicviewmodel
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.spotechnify.Music.Musicdata.Musicmodel.Song
 import com.example.spotechnify.Music.Musicdata.Musicnetwork.MusicService
+import com.example.spotechnify.Music.Musicviewmodel.Util.downloadFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -103,6 +106,11 @@ class MusicViewModel(private val musicService: MusicService) : ViewModel() {
         logWithTime("MusicViewModel", "Setting user: ${user.username}")
         _user.value = user
         fetchSongs()
+    }
+
+    fun downloadSongFile(context: Context, song: Song) {
+        Toast.makeText(context, "Download started...", Toast.LENGTH_SHORT).show()
+        downloadFile(context, song.audioFile, "${song.title} - ${song.artistName}.mp3")
     }
 }
 

@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 //>>>>>>> player
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -83,7 +84,7 @@ fun AuthApp() {
             val user = Gson().fromJson(userJson, User::class.java)
             if (musicService == null || musicViewModel == null){
                 musicService = NetworkModule.provideMusicService(user.token)
-                musicViewModel = MusicViewModelFactory(musicService).create(MusicViewModel::class.java)
+                musicViewModel = MusicViewModelFactory(musicService!!).create(MusicViewModel::class.java)
            }
             if(playerViewModel == null){
                 playerViewModel= PlayerViewModelFactory(
@@ -91,8 +92,13 @@ fun AuthApp() {
                     RemoteLikeService(user.token)
                 ).create(PlayerViewModel::class.java)
             }
-            MusicScreen(navController, musicViewModel, user) {songslist, index ->
-                playerViewModel.loadQueue(songslist, index);
+            val context = LocalContext.current
+            MusicScreen(navController,
+                musicViewModel!!,
+                user,
+                { song -> musicViewModel!!.downloadSongFile(context,song)})
+            { songslist, index ->
+                playerViewModel!!.loadQueue(songslist, index);
                 navController.navigate("player_screen")
             }
         }
