@@ -3,8 +3,6 @@ package com.example.spotechnify
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-//<<<<<<< HEAD
-//<<<<<<< HEAD
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -110,17 +108,6 @@ fun AuthApp(themeViewModel: ThemeViewModel) {
                     RemoteLikeService(user.token)
                 ).create(PlayerViewModel::class.java)
             }
-//<<<<<<< HEAD
-//            val context = LocalContext.current
-//            MusicScreen(navController,
-//                musicViewModel!!,
-//                user,
-//                { song -> musicViewModel!!.downloadSongFile(context,song)})
-//            { songslist, index ->
-//                playerViewModel!!.loadQueue(songslist, index);
-//                navController.navigate("player_screen")
-//            }
-//=======
 
             val context = LocalContext.current
             MusicScreen(
@@ -135,7 +122,6 @@ fun AuthApp(themeViewModel: ThemeViewModel) {
                 isDark = themeViewModel.isDarkMode.collectAsState().value,
                 toggleDarkMode = { themeViewModel.toggleTheme() }
             )
-//>>>>>>> feature/darkMode
         }
         composable("player_screen"){
             MusicPlayerScreen(navController, playerViewModel!!)
