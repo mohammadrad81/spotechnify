@@ -8,12 +8,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-//=======
-//>>>>>>> player
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,7 +24,6 @@ import com.example.spotechnify.Authentication.AuthViewModel
 import com.example.spotechnify.Authentication.LoginScreen
 import com.example.spotechnify.Authentication.SignUpScreen
 import com.example.spotechnify.Authentication.WelcomeScreen
-//=======
 import androidx.navigation.navArgument
 import com.example.spotechnify.Music.Musicdata.Musicnetwork.NetworkModule
 import com.example.spotechnify.Music.Musicviewmodel.MusicViewModel
@@ -36,23 +37,34 @@ import com.example.spotechnify.Player.PlayerViewModel
 import com.example.spotechnify.Player.PlayerViewModelFactory
 import com.example.spotechnify.Player.RemoteAudioPlayer
 import com.example.spotechnify.Player.RemoteLikeService
+import com.example.spotechnify.ui.theme.MyAppTheme
+import com.example.spotechnify.viewmodel.ThemeViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                AuthApp()
+            val themeViewModel: ThemeViewModel = viewModel(
+                factory = viewModelFactory {
+                    initializer { ThemeViewModel(application) }
+                }
+            )
+            val isDarkTheme by themeViewModel.isDarkMode.collectAsState()
+
+            MyAppTheme(isDarkTheme = isDarkTheme) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AuthApp(themeViewModel)
+                }
             }
         }
     }
 }
 
 @Composable
-fun AuthApp() {
+fun AuthApp(themeViewModel: ThemeViewModel) {
     val navController = rememberNavController()
     val authViewModel: AuthViewModel = viewModel()
     var musicService: MusicService? = null
@@ -64,13 +76,19 @@ fun AuthApp() {
         startDestination = "welcome"
     ) {
         composable("welcome") {
-            WelcomeScreen(navController)
+            WelcomeScreen(navController,
+                themeViewModel.isDarkMode.collectAsState().value,
+                toggleDarkMode = { themeViewModel.toggleTheme()})
         }
         composable("login") {
-            LoginScreen(navController, authViewModel)
+            LoginScreen(navController, authViewModel,
+                themeViewModel.isDarkMode.collectAsState().value,
+                toggleDarkMode = { themeViewModel.toggleTheme()})
         }
         composable("signup") {
-            SignUpScreen(navController, authViewModel)
+            SignUpScreen(navController, authViewModel,
+                themeViewModel.isDarkMode.collectAsState().value,
+                toggleDarkMode = { themeViewModel.toggleTheme()})
         }
         composable("music_screen?user={user}",
             arguments = listOf(
@@ -92,15 +110,32 @@ fun AuthApp() {
                     RemoteLikeService(user.token)
                 ).create(PlayerViewModel::class.java)
             }
+//<<<<<<< HEAD
+//            val context = LocalContext.current
+//            MusicScreen(navController,
+//                musicViewModel!!,
+//                user,
+//                { song -> musicViewModel!!.downloadSongFile(context,song)})
+//            { songslist, index ->
+//                playerViewModel!!.loadQueue(songslist, index);
+//                navController.navigate("player_screen")
+//            }
+//=======
+
             val context = LocalContext.current
-            MusicScreen(navController,
-                musicViewModel!!,
-                user,
-                { song -> musicViewModel!!.downloadSongFile(context,song)})
-            { songslist, index ->
-                playerViewModel!!.loadQueue(songslist, index);
-                navController.navigate("player_screen")
-            }
+            MusicScreen(
+                navController = navController,
+                viewModel = musicViewModel,
+                user = user,
+                onDownloadClicked = { song -> musicViewModel!!.downloadSongFile(context,song)},
+                onSongItemClick = { songslist, index ->
+                    playerViewModel.loadQueue(songslist, index)
+                    navController.navigate("player_screen")
+                },
+                isDark = themeViewModel.isDarkMode.collectAsState().value,
+                toggleDarkMode = { themeViewModel.toggleTheme() }
+            )
+//>>>>>>> feature/darkMode
         }
         composable("player_screen"){
             MusicPlayerScreen(navController, playerViewModel!!)

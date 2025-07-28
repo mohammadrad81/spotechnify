@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.DisposableEffect
@@ -48,8 +49,12 @@ import com.example.spotechnify.R
 
 
 @Composable
-fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewModel){
+fun MusicPlayerScreen(
+    navController: NavHostController,
+    viewModel: PlayerViewModel
+) {
     val uiState by viewModel.uiState.collectAsState()
+    val colors = MaterialTheme.colorScheme
 
     LaunchedEffect(Unit) {
         viewModel.setPlayerScreenVisibility(true)
@@ -66,7 +71,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFF121212), Color.Black),
+                    colors = listOf(colors.background, colors.surface),
                     startY = 0f,
                     endY = 800f
                 )
@@ -74,16 +79,20 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
             .padding(10.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown, // Replace with your icon
+                        imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Back",
-                        tint = Color.White
+                        tint = colors.onBackground
                     )
                 }
             }
@@ -97,33 +106,39 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                     .size(300.dp)
                     .clip(RoundedCornerShape(8.dp)),
             )
+
             Spacer(modifier = Modifier.height(32.dp))
-            Row (
+
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
                     Text(
-                        text = uiState.trackInformation?.title?:"Unknown",
-                        color = Color.White,
+                        text = uiState.trackInformation?.title ?: "Unknown",
+                        color = colors.onBackground,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = uiState.trackInformation?.artistName?:"Unknown",
-                        color = Color.Gray,
+                        text = uiState.trackInformation?.artistName ?: "Unknown",
+                        color = colors.onSurfaceVariant,
                         fontSize = 16.sp
                     )
                 }
+
                 IconButton(onClick = { viewModel.toggleLike() }) {
                     Icon(
-                        imageVector = if (uiState.trackInformation?.liked == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        imageVector = if (uiState.trackInformation?.liked == true)
+                            Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Favorite",
-                        tint = if (uiState.trackInformation?.liked == true) Color(0xFF1DB954) else Color.White
+                        tint = if (uiState.trackInformation?.liked == true)
+                            Color(0xFF1DB954) else colors.onBackground
                     )
                 }
             }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -132,9 +147,9 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                     onValueChange = { newValue -> viewModel.seekTo(newValue) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = SliderDefaults.colors(
-                        thumbColor = Color.White,
+                        thumbColor = colors.onBackground,
                         activeTrackColor = Color(0xFF1DB954),
-                        inactiveTrackColor = Color.Gray
+                        inactiveTrackColor = colors.onSurfaceVariant
                     )
                 )
                 Row(
@@ -143,12 +158,12 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                 ) {
                     Text(
                         text = uiState.formattedPosition,
-                        color = Color.Gray,
+                        color = colors.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                     Text(
                         text = uiState.formattedDuration,
-                        color = Color.Gray,
+                        color = colors.onSurfaceVariant,
                         fontSize = 12.sp
                     )
                 }
@@ -176,13 +191,13 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                         contentDescription = "Previous",
-                        tint = Color.White,
+                        tint = colors.onBackground,
                         modifier = Modifier.size(32.dp)
                     )
                 }
 
                 IconButton(
-                    onClick = {viewModel.togglePlayPause()},
+                    onClick = { viewModel.togglePlayPause() },
                     modifier = Modifier
                         .size(64.dp)
                         .background(Color(0xFF1DB954), CircleShape)
@@ -191,7 +206,9 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                         CircularProgressIndicator(color = Color.White)
                     } else {
                         Icon(
-                            imageVector = if (uiState.isPlaying) ImageVector.vectorResource(R.drawable.pause_solid) else Icons.Default.PlayArrow,
+                            imageVector = if (uiState.isPlaying)
+                                ImageVector.vectorResource(R.drawable.pause_solid)
+                            else Icons.Default.PlayArrow,
                             contentDescription = if (uiState.isPlaying) "Pause" else "Play",
                             tint = Color.White,
                             modifier = Modifier.size(36.dp)
@@ -203,7 +220,7 @@ fun MusicPlayerScreen(navController: NavHostController, viewModel: PlayerViewMod
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = "Next",
-                        tint = Color.White,
+                        tint = colors.onBackground,
                         modifier = Modifier.size(32.dp)
                     )
                 }

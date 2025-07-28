@@ -2,13 +2,17 @@ package com.example.spotechnify.Authentication
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,7 +31,9 @@ import com.example.spotechnify.Music.Musicviewmodel.User
 import com.google.gson.Gson
 
 @Composable
-fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
+fun SignUpScreen(navController: NavController, viewModel: AuthViewModel,
+                 isDark: Boolean,
+                 toggleDarkMode: () -> Unit) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -59,10 +65,24 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Dark Mode", style = MaterialTheme.typography.bodyMedium)
+            Switch(
+                checked = isDark,
+                onCheckedChange = { toggleDarkMode() }
+            )
+        }
         Text(
             text = "Sign Up",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 32.dp)
+            modifier = Modifier.padding(bottom = 32.dp),
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         OutlinedTextField(
@@ -71,7 +91,13 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
             label = { Text("First Name") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
 
         OutlinedTextField(
@@ -80,7 +106,13 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
             label = { Text("Last Name") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
 
         OutlinedTextField(
@@ -89,7 +121,13 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
             label = { Text("Email") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
 
         OutlinedTextField(
@@ -98,7 +136,13 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
             label = { Text("Username") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
 
         OutlinedTextField(
@@ -108,7 +152,13 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
 
         if (isLoading) {
@@ -120,7 +170,10 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text("Sign Up")
             }
@@ -139,7 +192,10 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel) {
             onClick = { navController.navigate("login") },
             modifier = Modifier.padding(top = 16.dp)
         ) {
-            Text("Already have an account? Login")
+            Text(
+                text = "Already have an account? Login",
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }

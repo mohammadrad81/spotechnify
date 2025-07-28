@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,10 +34,17 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
             Text(
                 text = "Welcome, ${user.firstName} ${user.lastName}!",
                 style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
+                color = MaterialTheme.colorScheme.onBackground
             )
-            Text(text = "Username: ${user.username}")
-            Text(text = "Email: ${user.email}")
+            Text(
+                text = "Username: ${user.username}",
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = "Email: ${user.email}",
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
 
         Button(
@@ -47,9 +55,12 @@ fun HomeScreen(navController: NavController, viewModel: AuthViewModel) {
                 }
             },
             modifier = Modifier
-                .padding(top = 32.dp)
+                .padding(top = 32.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            )
         ) {
-            Text("Logout")
+            Text("Logout", color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }

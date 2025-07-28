@@ -89,14 +89,33 @@ fun SongItem(song: Song, onDownloadClicked: (Song)->Unit, onClick: () -> Unit) {
 fun MusicScreen(navController: NavController,
                 viewModel: MusicViewModel,
                 user: User,
+//<<<<<<< HEAD
                 onDownloadClicked: (Song) -> Unit,
-                onSongItemClick: (List<Song>, Int) -> Unit) {
+//                onSongItemClick: (List<Song>, Int) -> Unit) {
+//=======
+                onSongItemClick: (List<Song>, Int) -> Unit,
+                isDark: Boolean,
+                toggleDarkMode: () -> Unit) {
+//>>>>>>> feature/darkMode
     viewModel.setUser(user)
     Scaffold {innerPadding->
         val tabs = listOf("All", "For You", "Liked")
         var selectedTab by remember { mutableStateOf(0) }
 
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (isDark) "Dark Mode: ON" else "Dark Mode: OFF",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Switch(checked = isDark, onCheckedChange = { toggleDarkMode() })
+            }
             TabRow(selectedTabIndex = selectedTab) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
@@ -116,10 +135,18 @@ fun MusicScreen(navController: NavController,
 }
 
 @Composable
+//<<<<<<< HEAD
 fun AllScreen(viewModel: MusicViewModel,
               navController: NavController,
               onDownloadClicked: (Song) -> Unit,
               onSongItemClick: (List<Song>, Int) -> Unit) {
+//=======
+//fun AllScreen(
+//    viewModel: MusicViewModel,
+//    navController: NavController,
+//    onSongItemClick: (List<Song>, Int) -> Unit
+//) {
+//>>>>>>> feature/darkMode
     val filteredSongs = viewModel.filteredSongs.collectAsState().value
     val searchQuery = viewModel.searchQuery.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
@@ -132,7 +159,13 @@ fun AllScreen(viewModel: MusicViewModel,
                 .fillMaxWidth()
                 .padding(16.dp),
             placeholder = { Text("Search songs, artists, or genres") },
-            singleLine = true
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
         )
         when {
             isLoading -> {
@@ -150,7 +183,7 @@ fun AllScreen(viewModel: MusicViewModel,
                         .fillMaxWidth()
                         .padding(16.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.outline,
                     textAlign = TextAlign.Center
                 )
             }
@@ -161,17 +194,22 @@ fun AllScreen(viewModel: MusicViewModel,
                         .fillMaxWidth()
                         .padding(16.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.outline,
                     textAlign = TextAlign.Center
                 )
             }
             else -> {
                 LazyColumn {
+//<<<<<<< HEAD
 //                    items(filteredSongs, key = { it.id }) { song ->
 //                        SongItem(song) { navController.navigate("song_details/${song.id}") }
 //                    }
                     itemsIndexed(filteredSongs, key = {_, song -> song.id}) {index,  song ->
                         SongItem(song,{onDownloadClicked(song)}) { onSongItemClick(filteredSongs, index) }
+//=======
+//                    itemsIndexed(filteredSongs, key = { _, song -> song.id }) { index, song ->
+//                        SongItem(song) { onSongItemClick(filteredSongs, index) }
+//>>>>>>> feature/darkMode
                     }
                 }
             }
@@ -179,11 +217,20 @@ fun AllScreen(viewModel: MusicViewModel,
     }
 }
 
+
 @Composable
+//<<<<<<< HEAD
 fun ForYouScreen(viewModel: MusicViewModel,
                  navController: NavController,
                  onDownloadClicked: (Song) -> Unit,
                  onSongItemClick: (List<Song>, Int) -> Unit) {
+//=======
+//fun ForYouScreen(
+//    viewModel: MusicViewModel,
+//    navController: NavController,
+//    onSongItemClick: (List<Song>, Int) -> Unit
+//) {
+//>>>>>>> feature/darkMode
     val forYouSongs = viewModel.forYouSongs.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
 
@@ -203,17 +250,22 @@ fun ForYouScreen(viewModel: MusicViewModel,
                     .fillMaxWidth()
                     .padding(16.dp),
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.outline,
                 textAlign = TextAlign.Center
             )
         }
         else -> {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
+//<<<<<<< HEAD
 //                items(forYouSongs, key = { it.id }) { song ->
 //                    SongItem(song) { navController.navigate("song_details/${song.id}") }
 //                }
                 itemsIndexed(forYouSongs, key = {_, song -> song.id}) {index,  song ->
                     SongItem(song,onDownloadClicked) { onSongItemClick(forYouSongs, index) }
+//=======
+//                itemsIndexed(forYouSongs, key = { _, song -> song.id }) { index, song ->
+//                    SongItem(song) { onSongItemClick(forYouSongs, index) }
+//>>>>>>> feature/darkMode
                 }
             }
         }
@@ -222,10 +274,18 @@ fun ForYouScreen(viewModel: MusicViewModel,
 
 @Composable
 //<<<<<<< HEAD
+//<<<<<<< HEAD
 fun LikedScreen(viewModel: MusicViewModel,
                 navController: NavController,
                 onDownloadClicked: (Song) -> Unit,
                 onSongItemClick: (List<Song>, Int) -> Unit) {
+//=======
+//fun LikedScreen(
+//    viewModel: MusicViewModel,
+//    navController: NavController,
+//    onSongItemClick: (List<Song>, Int) -> Unit
+//) {
+//>>>>>>> feature/darkMode
     val likedSongs = viewModel.likedSongs.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
 //=======
@@ -267,6 +327,7 @@ fun LikedScreen(viewModel: MusicViewModel,
             Text("Share")
         }
 //<<<<<<< HEAD
+//<<<<<<< HEAD
 //        likedSongs.isEmpty() -> {
 //            Text(
 //                text = "No liked songs",
@@ -303,7 +364,7 @@ fun LikedScreen(viewModel: MusicViewModel,
                         .fillMaxWidth()
                         .padding(16.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.outline,
                     textAlign = TextAlign.Center
                 )
             }
@@ -313,6 +374,23 @@ fun LikedScreen(viewModel: MusicViewModel,
                         SongItem(song, onDownloadClicked) { onSongItemClick(likedSongs, index) }
                     }
 //>>>>>>> share-songs
+//=======
+//        likedSongs.isEmpty() -> {
+//            Text(
+//                text = "No liked songs",
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                style = MaterialTheme.typography.bodyMedium,
+//                color = MaterialTheme.colorScheme.outline,
+//                textAlign = TextAlign.Center
+//            )
+//        }
+//        else -> {
+//            LazyColumn(modifier = Modifier.fillMaxSize()) {
+//                itemsIndexed(likedSongs, key = { _, song -> song.id }) { index, song ->
+//                    SongItem(song) { onSongItemClick(likedSongs, index) }
+//>>>>>>> feature/darkMode
                 }
             }
         }
