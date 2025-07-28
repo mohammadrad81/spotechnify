@@ -23,7 +23,7 @@ fun LoginScreen(
     isDark: Boolean,
     toggleDarkMode: () -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     val authResult by viewModel.authResult.collectAsState()
@@ -84,9 +84,9 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Username") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -122,12 +122,12 @@ fun LoginScreen(
             } else {
                 Button(
                     onClick = {
-                        if (email.isNotBlank() && password.isNotBlank()) {
-                            viewModel.login(email, password)
+                        if (username.isNotBlank() && password.isNotBlank()) {
+                            viewModel.login(username, password)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = email.isNotBlank() && password.isNotBlank(),
+                    enabled = username.isNotBlank() && password.isNotBlank(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary
                     )

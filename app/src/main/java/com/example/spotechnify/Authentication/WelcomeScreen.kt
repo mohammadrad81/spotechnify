@@ -58,13 +58,14 @@ fun WelcomeScreen(navController: NavController,
                 )
             }
             Text(
-                text = "Welcome to Spotechnify",
+                text = "Spotechnify",
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = { navController.navigate("login") },
+                modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
@@ -74,6 +75,7 @@ fun WelcomeScreen(navController: NavController,
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(
                 onClick = { navController.navigate("signup") },
+                modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.primary
                 )
