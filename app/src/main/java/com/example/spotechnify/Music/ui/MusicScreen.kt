@@ -28,6 +28,14 @@ import com.example.spotechnify.Music.Musicviewmodel.MusicViewModel
 import com.example.spotechnify.Music.Musicviewmodel.User
 import com.example.spotechnify.R
 
+// import for share button
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
+
 @Composable
 fun SongItem(song: Song, onDownloadClicked: (Song)->Unit, onClick: () -> Unit) {
     Card(
@@ -213,40 +221,98 @@ fun ForYouScreen(viewModel: MusicViewModel,
 }
 
 @Composable
+//<<<<<<< HEAD
 fun LikedScreen(viewModel: MusicViewModel,
                 navController: NavController,
                 onDownloadClicked: (Song) -> Unit,
                 onSongItemClick: (List<Song>, Int) -> Unit) {
     val likedSongs = viewModel.likedSongs.collectAsState().value
     val isLoading = viewModel.isLoading.collectAsState().value
+//=======
+//fun LikedScreen(
+//    viewModel: MusicViewModel,
+//    navController: NavController,
+//    onSongItemClick: (List<Song>, Int) -> Unit
+//) {
+//>>>>>>> share-songs
 
-    when {
-        isLoading -> {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .wrapContentSize(Alignment.Center)
-            )
+//    val likedSongs by viewModel.likedSongs.collectAsState()
+//    val isLoading by viewModel.isLoading.collectAsState()
+
+    val context = LocalContext.current
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // share button
+        Button(
+            onClick = {
+                // create share text
+                val shareText = likedSongs.joinToString(separator = "\n\n") { song ->
+                    // format
+                    "${song.title} - ${song.artistName}\nlink:\n${song.audioFile}"
+                }
+
+                // copy to clipboard
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Liked Songs", shareText)
+                clipboard.setPrimaryClip(clip)
+
+
+                Toast.makeText(context, "Liked songs copied to clipboard", Toast.LENGTH_SHORT).show()
+            },
+            enabled = likedSongs.isNotEmpty(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Text("Share")
         }
-        likedSongs.isEmpty() -> {
-            Text(
-                text = "No liked songs",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray,
-                textAlign = TextAlign.Center
-            )
-        }
-        else -> {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-//                items(likedSongs, key = { it.id }) { song ->
-//                    SongItem(song) { navController.navigate("player_screen?user=${}&") }
-//                }
-                itemsIndexed(likedSongs, key = {_, song -> song.id}) {index,  song ->
-                    SongItem(song, onDownloadClicked) { onSongItemClick(likedSongs, index) }
+//<<<<<<< HEAD
+//        likedSongs.isEmpty() -> {
+//            Text(
+//                text = "No liked songs",
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                style = MaterialTheme.typography.bodyMedium,
+//                color = Color.Gray,
+//                textAlign = TextAlign.Center
+//            )
+//        }
+//        else -> {
+//            LazyColumn(modifier = Modifier.fillMaxSize()) {
+////                items(likedSongs, key = { it.id }) { song ->
+////                    SongItem(song) { navController.navigate("player_screen?user=${}&") }
+////                }
+//                itemsIndexed(likedSongs, key = {_, song -> song.id}) {index,  song ->
+//                    SongItem(song, onDownloadClicked) { onSongItemClick(likedSongs, index) }
+//=======
+
+        // no change
+        when {
+            isLoading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center)
+                )
+            }
+            likedSongs.isEmpty() -> {
+                Text(
+                    text = "No liked songs",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center
+                )
+            }
+            else -> {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    itemsIndexed(likedSongs, key = { _, song -> song.id }) { index, song ->
+                        SongItem(song, onDownloadClicked) { onSongItemClick(likedSongs, index) }
+                    }
+//>>>>>>> share-songs
                 }
             }
         }
