@@ -1,45 +1,51 @@
 package com.example.spotechnify.Authentication
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.spotechnify.Music.Musicviewmodel.User
+import com.example.spotechnify.R
 import com.google.gson.Gson
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: AuthViewModel, isDark: Boolean,
-                toggleDarkMode: () -> Unit) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: AuthViewModel,
+    isDark: Boolean,
+    toggleDarkMode: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val authResult by viewModel.authResult.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    LaunchedEffect(authResult) {
+        if (authResult is AuthViewModel.AuthResult.Success) {
+            val user = (authResult as AuthViewModel.AuthResult.Success).user
+            val token = (authResult as AuthViewModel.AuthResult.Success).token
+            val authenticatedUserData = User(
+                id = user.id.toString(),
+                username = user.username,
+                email = user.email,
+                token = token.toString()
+            )
+            val userJson = Gson().toJson(authenticatedUserData)
+
+            navController.navigate("music_screen?user=${userJson}") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
 
     Scaffold { paddingValues ->
         Column(
@@ -50,6 +56,11 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel, isDark: 
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                contentDescription = "Spotechnify logo",
+                modifier = Modifier.padding(bottom = 32.dp).size(300.dp)
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -63,11 +74,13 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel, isDark: 
                     onCheckedChange = { toggleDarkMode() }
                 )
             }
+
             Text(
                 text = "Login",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -91,8 +104,9 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel, isDark: 
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
                     unfocusedBorderColor = MaterialTheme.colorScheme.outline,
@@ -103,14 +117,35 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel, isDark: 
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = { viewModel.login(email, password) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text("Login")
+            if (isLoading) {
+                CircularProgressIndicator()
+            } else {
+                Button(
+                    onClick = {
+                        if (email.isNotBlank() && password.isNotBlank()) {
+                            viewModel.login(email, password)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = email.isNotBlank() && password.isNotBlank(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text("Login")
+                }
+            }
+
+            when (authResult) {
+                is AuthViewModel.AuthResult.Error -> {
+                    Text(
+                        text = (authResult as AuthViewModel.AuthResult.Error).message,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+
+                else -> {}
             }
 
             Spacer(modifier = Modifier.height(12.dp))

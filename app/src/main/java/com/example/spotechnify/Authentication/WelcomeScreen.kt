@@ -39,6 +39,11 @@ fun WelcomeScreen(navController: NavController,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                contentDescription = "Spotechnify logo",
+                modifier = Modifier.padding(bottom = 32.dp).size(300.dp)
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
